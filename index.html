@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🎭 تِراپی‌ترِینِر | شبیه‌ساز آموزش درمانگر</title>
+    <style>
+        :root {
+            --bg-dark: #0a0e17;
+            --bg-card: #151a2e;
+            --bg-input: #1e2540;
+            --primary: #7c3aed;
+            --primary-glow: rgba(124, 58, 237, 0.4);
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: Tahoma, 'Segoe UI', Arial, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-main);
+            padding: 10px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container { max-width: 100%; margin: 0 auto; }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 15px 10px;
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-input));
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border);
+        }
+
+        .logo { font-size: 2.5rem; margin-bottom: 5px; }
+        h1 {
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, var(--primary), var(--info));            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 3px;
+        }
+        .subtitle { color: var(--text-muted); font-size: 0.8rem; }
+
+        /* Role Badge */
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(124, 58, 237, 0.2);
+            border: 1px solid var(--primary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin: 10px 0;
+        }
+
+        /* Status */
+        .status {
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .status.ready { background: rgba(34, 197, 94, 0.15); color: var(--success); border: 1px solid rgba(34, 197, 94, 0.3); }
+        .status.loading { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+        .status.error { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+
+        /* Disorder Selector */
+        .disorder-selector {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+        }
+        .disorder-title {
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;            gap: 6px;
+        }
+        .disorder-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        @media (min-width: 600px) { .disorder-grid { grid-template-columns: repeat(3, 1fr); } }
+
+        .disorder-btn {
+            padding: 10px 8px;
+            background: var(--bg-input);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .disorder-btn.active {
+            border-color: var(--primary);
+            background: rgba(124, 58, 237, 0.15);
+            color: var(--primary);
+            font-weight: bold;
+        }
+        .disorder-btn:hover { border-color: var(--primary); transform: translateY(-1px); }
+        .disorder-btn .icon { font-size: 1.2rem; }
+
+        /* Scenario Section */
+        .scenario-section {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(124, 58, 237, 0.1));
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+        }
+        .scenario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .scenario-title {
+            font-size: 0.95rem;
+            font-weight: bold;            color: var(--danger);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .pattern-tag {
+            background: rgba(239, 68, 68, 0.2);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: var(--danger);
+        }
+        .unhealthy-thought {
+            background: var(--bg-input);
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            border-right: 4px solid var(--danger);
+            margin-bottom: 10px;
+        }
+        .thought-meta {
+            display: flex;
+            gap: 10px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+        }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Therapist Input */
+        .therapist-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+        }
+        .therapist-title {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: var(--success);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: vertical;
+            margin-bottom: 10px;
+        }
+        textarea:focus {
+            border-color: var(--success);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+        }
+        .therapist-hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            padding: 8px;
+            background: rgba(34, 197, 94, 0.1);
+            border-radius: 6px;
+            border-right: 3px solid var(--success);
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 8px;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
+        button {
+            flex: 1;
+            min-width: 80px;
+            padding: 12px 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;        }
+        button:active { transform: scale(0.98); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .btn-primary { background: linear-gradient(135deg, var(--primary), #a78bfa); color: white; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-warning { background: var(--warning); color: #000; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-secondary { background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border); }
+
+        /* Evaluation Section */
+        .evaluation-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            display: none;
+        }
+        .evaluation-section.show { display: block; animation: slideUp 0.3s; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .eval-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+        .eval-score {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--success), #22d3ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .eval-grade {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        .grade-excellent { background: rgba(34, 197, 94, 0.2); color: var(--success); }
+        .grade-good { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .grade-needs-work { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+
+        .eval-criteria {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .criterion {
+            background: var(--bg-input);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+        .criterion-name { color: var(--text-muted); margin-bottom: 4px; }
+        .criterion-score {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: bold;
+        }
+        .score-bar {
+            flex: 1;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .score-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+        .score-fill.high { background: var(--success); }
+        .score-fill.medium { background: var(--warning); }
+        .score-fill.low { background: var(--danger); }
+
+        .feedback-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.9rem;
+            color: var(--info);
+        }
+        .feedback-title {
+            font-weight: bold;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Method Suggestions */
+        .method-section {            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+        }
+        .method-title {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: var(--info);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .method-card {
+            background: var(--bg-input);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-right: 3px solid var(--info);
+        }
+        .method-name {
+            font-weight: bold;
+            color: var(--info);
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .method-difficulty {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+        .method-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; }
+        .method-exercise {
+            background: rgba(34, 197, 94, 0.1);
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 0.85rem;
+            color: var(--success);
+            border-right: 3px solid var(--success);
+        }
+
+        /* Progress Section */
+        .progress-section {
+            background: var(--bg-card);
+            border-radius: 12px;            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+        }
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .progress-title {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        .progress-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--success);
+        }
+        .progress-bar-container {
+            height: 12px;
+            background: var(--bg-input);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        .progress-bar {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.5s ease;
+            background: linear-gradient(90deg, var(--danger), var(--warning), var(--success));
+        }
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Chart */
+        .chart-container {
+            background: var(--bg-input);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            min-height: 150px;
+            position: relative;
+        }
+        .chart-canvas { width: 100%; height: 120px; }        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+            font-size: 0.8rem;
+        }
+        .legend-item { display: flex; align-items: center; gap: 5px; }
+        .legend-color { width: 12px; height: 12px; border-radius: 3px; }
+        .legend-color.excellent { background: var(--success); }
+        .legend-color.good { background: var(--warning); }
+        .legend-color.learning { background: var(--info); }
+
+        /* History */
+        .history-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            max-height: 180px;
+            overflow-y: auto;
+        }
+        .history-title {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        .history-item {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.85rem;
+        }
+        .history-item:last-child { border-bottom: none; }
+        .history-score {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+        .history-date { color: var(--text-muted); font-size: 0.75rem; margin-bottom: 4px; }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;            margin: 12px 0;
+        }
+        .stat-card {
+            background: var(--bg-input);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+        .stat-value { font-size: 1.2rem; font-weight: bold; color: var(--primary); }
+        .stat-label { font-size: 0.7rem; color: var(--text-muted); }
+
+        /* Settings */
+        .settings-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .settings-row:last-child { border-bottom: none; }
+        input[type="range"] { width: 100px; accent-color: var(--primary); }
+        input[type="number"] {
+            width: 55px; padding: 5px; border-radius: 4px;
+            border: 1px solid var(--border); background: var(--bg-input);
+            color: var(--text-main); text-align: center;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed; top: 10px; left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            padding: 12px 20px; border-radius: 25px;
+            font-size: 0.9rem; font-weight: 500;
+            z-index: 1000; transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            max-width: 90%; text-align: center;
+        }
+        .notification.show { transform: translateX(-50%) translateY(0); }
+        .notification.success { background: var(--success); color: white; }
+        .notification.info { background: var(--info); color: white; }
+        .notification.warning { background: var(--warning); color: #000; }
+        .notification.error { background: var(--danger); color: white; }
+
+        /* Responsive */
+        @media (max-width: 400px) {
+            .disorder-grid { grid-template-columns: repeat(2, 1fr); }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .eval-criteria { grid-template-columns: 1fr; }
+            .controls { flex-direction: column; }
+            button { width: 100%; }        }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg-input); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<div class="notification" id="notification"></div>
+
+<div class="container">
+    <!-- Header -->
+    <header>
+        <div class="logo">🎭</div>
+        <h1>تِراپی‌ترِینِر</h1>
+        <p class="subtitle">شبیه‌ساز آموزش درمانگر شناختی-رفتاری</p>
+        <div class="role-badge">👨‍⚕️ شما در نقش درمانگر هستید</div>
+    </header>
+
+    <!-- Status -->
+    <div class="status loading" id="status">
+        <span>⏳</span> در حال بارگذاری مدل‌های آموزشی...
+    </div>
+
+    <!-- Disorder Selector -->
+    <div class="disorder-selector">
+        <div class="disorder-title">🎯 اختلال برای تمرین را انتخاب کنید</div>
+        <div class="disorder-grid">
+            <button class="disorder-btn depression active" onclick="selectDisorder('depression', this)">
+                <span class="icon">😔</span> افسردگی
+            </button>
+            <button class="disorder-btn anxiety" onclick="selectDisorder('anxiety', this)">
+                <span class="icon">😰</span> اضطراب
+            </button>
+            <button class="disorder-btn bpd" onclick="selectDisorder('bpd', this)">
+                <span class="icon">🌀</span> شخصیت مرزی
+            </button>
+            <button class="disorder-btn ocd" onclick="selectDisorder('ocd', this)">
+                <span class="icon">🔄</span> وسواس
+            </button>
+            <button class="disorder-btn ptsd" onclick="selectDisorder('ptsd', this)">
+                <span class="icon">💥</span> PTSD
+            </button>
+            <button class="disorder-btn adhd" onclick="selectDisorder('adhd', this)">
+                <span class="icon">⚡</span> ADHD
+            </button>
+        </div>
+    </div>
+    <!-- Scenario: Model generates unhealthy thought -->
+    <div class="scenario-section">
+        <div class="scenario-header">
+            <div class="scenario-title">🧠 فکر ناسالم تولید شده توسط مدل</div>
+            <span class="pattern-tag" id="patternTag">الگو: -</span>
+        </div>
+        <div class="unhealthy-thought" id="unhealthyThought">
+            در حال تولید سناریوی درمانی...
+        </div>
+        <div class="thought-meta">
+            <span class="meta-item">🎯 شدت: <strong id="severityValue">-</strong></span>
+            <span class="meta-item">📊 نوع الگو: <strong id="patternType">-</strong></span>
+            <span class="meta-item">🔄 سناریو #<strong id="scenarioNum">۱</strong></span>
+        </div>
+    </div>
+
+    <!-- Therapist Input: User writes reframe -->
+    <div class="therapist-section">
+        <div class="therapist-title">✍️ پاسخ درمانی شما (بازسازی شناختی)</div>
+        <textarea id="therapistResponse" placeholder="به عنوان درمانگر، چگونه این فکر را بازسازی می‌کنید؟
+
+مثال برای افسردگی:
+❌ فکر بیمار: «همه چیز بی‌فایده است»
+✅ پاسخ شما: «این احساس موقتی است. بیایید روی یک قدم کوچک امروز تمرکز کنیم...»
+
+نکته: پاسخ شما باید همدلانه، واقع‌بینانه و امیدبخش باشد."></textarea>
+        <div class="therapist-hint">
+            💡 راهنما: پاسخ شما باید ۱) الگوی ناسالم را شناسایی کند ۲) همدلی نشان دهد ۳) دیدگاه متعادل‌تری ارائه دهد ۴) قابل اجرا باشد
+        </div>
+        
+        <div class="settings-row">
+            <label>سطح دشواری:</label>
+            <select id="difficulty" style="padding:5px;border-radius:4px;background:var(--bg-input);color:white;border:1px solid var(--border);">
+                <option value="1">مقدماتی</option>
+                <option value="2" selected>متوسط</option>
+                <option value="3">پیشرفته</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <button class="btn-primary" id="evalBtn" onclick="evaluateResponse()">
+            <span>✅</span> ارزیابی پاسخ من
+        </button>
+        <button class="btn-warning" onclick="generateNewScenario()">
+            <span>🔄</span> سناریوی جدید
+        </button>
+        <button class="btn-success" onclick="saveSession()">
+            <span>💾</span> ذخیره تمرین        </button>
+        <button class="btn-secondary" onclick="resetProgress()">
+            <span>🔄</span> شروع مجدد
+        </button>
+    </div>
+
+    <!-- Evaluation Results -->
+    <div class="evaluation-section" id="evaluationSection">
+        <div class="eval-header">
+            <div>
+                <div style="font-size:0.9rem;color:var(--text-muted)">امتیاز پاسخ شما</div>
+                <div class="eval-score" id="evalScore">۰٪</div>
+            </div>
+            <div class="eval-grade" id="evalGrade">در حال ارزیابی...</div>
+        </div>
+        
+        <div class="eval-criteria">
+            <div class="criterion">
+                <div class="criterion-name">🎯 شناسایی الگو</div>
+                <div class="criterion-score">
+                    <span id="scorePattern">۰٪</span>
+                    <div class="score-bar"><div class="score-fill" id="fillPattern" style="width:0%"></div></div>
+                </div>
+            </div>
+            <div class="criterion">
+                <div class="criterion-name">💙 همدلی</div>
+                <div class="criterion-score">
+                    <span id="scoreEmpathy">۰٪</span>
+                    <div class="score-bar"><div class="score-fill" id="fillEmpathy" style="width:0%"></div></div>
+                </div>
+            </div>
+            <div class="criterion">
+                <div class="criterion-name">🧭 واقع‌بینی</div>
+                <div class="criterion-score">
+                    <span id="scoreRealistic">۰٪</span>
+                    <div class="score-bar"><div class="score-fill" id="fillRealistic" style="width:0%"></div></div>
+                </div>
+            </div>
+            <div class="criterion">
+                <div class="criterion-name">🛠️ کاربردی بودن</div>
+                <div class="criterion-score">
+                    <span id="scoreActionable">۰٪</span>
+                    <div class="score-bar"><div class="score-fill" id="fillActionable" style="width:0%"></div></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="feedback-box">
+            <div class="feedback-title">💡 بازخورد هوشمند</div>
+            <div id="feedbackText">پاسخ شما تحلیل می‌شود...</div>        </div>
+    </div>
+
+    <!-- Method Suggestions -->
+    <div class="method-section">
+        <div class="method-title">🛠️ روش‌های درمانی پیشنهادی برای این الگو</div>
+        <div id="methodSuggestions">
+            <!-- Dynamic content -->
+        </div>
+    </div>
+
+    <!-- Progress Section -->
+    <div class="progress-section">
+        <div class="progress-header">
+            <div class="progress-title">📈 مهارت درمانگری شما</div>
+            <div class="progress-value" id="skillPercent">۰٪</div>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="skillBar" style="width: 0%"></div>
+        </div>
+        <div class="progress-labels">
+            <span>تازه‌کار</span>
+            <span>مهارت فعلی</span>
+            <span>متخصص</span>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="skillChart" class="chart-canvas"></canvas>
+            <div class="chart-legend">
+                <div class="legend-item"><div class="legend-color excellent"></div> عالی</div>
+                <div class="legend-item"><div class="legend-color good"></div> خوب</div>
+                <div class="legend-item"><div class="legend-color learning"></div> در حال یادگیری</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History -->
+    <div class="history-section">
+        <div class="history-title">📚 تاریخچه تمرین‌ها</div>
+        <div id="sessionHistory">
+            <div style="color:var(--text-muted);text-align:center;padding:10px">هنوز تمرینی ثبت نشده</div>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value" id="statSessions">۰</div>
+            <div class="stat-label">تمرین‌ها</div>
+        </div>        <div class="stat-card">
+            <div class="stat-value" id="statAvgScore">۰٪</div>
+            <div class="stat-label">میانگین امتیاز</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="statStreak">۰</div>
+            <div class="stat-label">رکورد بهبود</div>
+        </div>
+    </div>
+</div>
+
+<script>
+/**
+ * THERAPY-TRAINER v1.0
+ * Therapist Training Simulator - User practices cognitive restructuring
+ * 
+ * Flow:
+ * 1. Model generates unhealthy thought for selected disorder
+ * 2. User (as therapist) writes healthy reframe
+ * 3. App evaluates user's response quality
+ * 4. App suggests therapeutic methods
+ * 5. Progress tracked per disorder model
+ */
+
+// ============================================
+// Disorder-Specific Training Data
+// ============================================
+const DISORDER_DATA = {
+    depression: {
+        name: 'افسردگی',
+        icon: '😔',
+        color: '#8b5cf6',
+        
+        // Unhealthy thought templates for generation
+        thoughtTemplates: [
+            { template: "{همه چیز|هیچ چیز} {بی‌فایده|پوچ|بی‌ارزش} است، من {هیچ‌وقت|هرگز} {خوب نمی‌شوم|تغییر نمی‌کنم}", pattern: 'تفکر همه یا هیچ', severity: 0.9 },
+            { template: "من {تقصیر من|مقصرم|مسئولم} که {همه چیز|اوضاع} {خراب شد|بد شد}", pattern: 'سرزنش خود', severity: 0.85 },
+            { template: "{نوعی درماندگی|نمی‌شود|غیرممکن است} که {حالم خوب شود|چیزی تغییر کند|امید داشته باشم}", pattern: 'درماندگی آموخته‌شده', severity: 0.9 },
+            { template: "من {بی‌ارزش|ناخواسته|سربار} هستم، {هیچ‌کس|کسی} {مرا دوست ندارد|مرا درک نمی‌کند}", pattern: 'احساس بی‌ارزشی', severity: 0.95 },
+            { template: "{خسته‌ام|انرژی ندارم|حوصله ندارم}، {هیچ کاری|کاری} {لذت‌بخش نیست|فایده‌ای ندارد}", pattern: 'بی‌لذتی', severity: 0.8 }
+        ],
+        
+        // Keywords for evaluating therapist responses
+        goodResponseKeywords: [
+            'موقتی', 'قدم کوچک', 'ارزشمند', 'کمک', 'امید', 'احساس', 'طبیعی', 
+            'پذیرش', 'تلاش', 'پیشرفت', 'حمایت', 'درک', 'همدلی', 'واقع‌بین',
+            'انتخاب', 'فرصت', 'رشد', 'مراقبت', 'استراحت', 'صبر'
+        ],
+        
+        // Therapeutic methods to suggest        
+        methods: [
+            {
+                name: 'فعال‌سازی رفتاری (BA)',
+                difficulty: 'مقدماتی',
+                desc: 'کمک به بیمار برای شروع فعالیت‌های کوچک و لذت‌بخش',
+                exercise: 'از بیمار بخواهید یک فعالیت ۵ دقیقه‌ای که قبلاً لذت می‌برد را نام ببرد و امروز انجام دهد، حتی اگر انگیزه ندارد.'
+            },
+            {
+                name: 'بازسازی شناختی (CBT)',
+                difficulty: 'متوسط',
+                desc: 'شناسایی و چالش با افکار منفی خودکار',
+                exercise: 'از بیمار بخواهید فکر منفی را بنویسد، سپس شواهد موافق و مخالف آن را لیست کند و فکر متعادل‌تری فرموله کند.'
+            },
+            {
+                name: 'ذهن‌آگاهی برای افسردگی (MBCT)',
+                difficulty: 'پیشرفته',
+                desc: 'مشاهد افکار بدون قضاوت و چسبیدن',
+                exercise: 'تمرین ۳ دقیقه‌ای: بیمار افکار منفی را مانند ابرهایی در آسمان مشاهده کند، بدون تلاش برای تغییر آنها.'
+            }
+        ]
+    },
+    
+    anxiety: {
+        name: 'اضطراب',
+        icon: '😰',
+        color: '#f59e0b',
+        
+        thoughtTemplates: [
+            { template: "حتماً {اتفاق بدی|فاجعه‌ای} {خواهد افتاد|در راه است}، من {نمی‌توانم|طاقت ندارم} تحملش کنم", pattern: 'پیش‌بینی فاجعه', severity: 0.95 },
+            { template: "اگر {چه شود|اتفاقی بیفتد|اشتباه کنم}، {همه چیز|زندگی‌ام} {خراب می‌شود|تمام می‌شود}", pattern: 'فکر چه‌می‌شود', severity: 0.9 },
+            { template: "من {باید|حتماً باید|مجبورم} که {کامل باشم|اشتباه نکنم|همه را راضی نگه دارم}", pattern: 'بایدهای سخت‌گیرانه', severity: 0.85 },
+            { template: "{نمی‌توانم|شانس ندارم|از پسش برنمی‌آیم} که {این موقعیت|این احساس|این ترس} را مدیریت کنم", pattern: 'تحمل‌ناپذیری', severity: 0.9 },
+            { template: "همیشه {نگران|مضطرب|هوشیار} هستم، {هیچ‌وقت|هرگز} {آرام نمی‌شوم|راحت نیستم}", pattern: 'تعمیم افراطی', severity: 0.8 }
+        ],
+        
+        goodResponseKeywords: [
+            'موقتی', 'قابل تحمل', 'قدم به قدم', 'منابع', 'توانایی', 'تنفس', 'آرام',
+            'واقع‌بین', 'شواهد', 'احتمال', 'کنترل', 'پذیرش', 'عدم قطعیت', 'مواجهه',
+            'تدریجی', 'مهارت', 'تمرین', 'پیشرفت', 'حمایت', 'درک'
+        ],
+        
+        methods: [
+            {
+                name: 'مواجهه تدریجی',
+                difficulty: 'متوسط',
+                desc: 'روبرو شدن با ترس‌ها در مراحل کوچک و کنترل‌شده',
+                exercise: 'با بیمار لیستی از موقعیت‌های اضطراب‌آور تهیه کنید و از کم‌ترین شروع کنید. هر بار ۵ دقیقه در موقعیت بماند بدون فرار.'
+            },
+            {
+                name: 'تکنیک‌های تنفسی ۴-۴-۶',                difficulty: 'مقدماتی',
+                desc: 'استفاده از تنفس برای تنظیم سیستم عصبی',
+                exercise: '۴ ثانیه دم، ۴ ثانیه حبس، ۶ ثانیه بازدم. این چرخه را ۵ بار با بیمار تکرار کنید تا سیستم عصبی آرام شود.'
+            },
+            {
+                name: 'چالش با افکار فاجعه‌بار',
+                difficulty: 'پیشرفته',
+                desc: 'بررسی شواهد واقعی برای افکار اضطرابی',
+                exercise: 'برای هر فکر فاجعه‌بار بپرسید: چه شواهدی دارم؟ چه شواهدی مخالف است؟ محتمل‌ترین (نه بدترین) نتیجه چیست?'
+            }
+        ]
+    },
+    
+    bpd: {
+        name: 'شخصیت مرزی',
+        icon: '🌀',
+        color: '#ef4444',
+        
+        thoughtTemplates: [
+            { template: "{همه|همه آنها} {از من متنفرند|مرا رها می‌کنند|دوستم ندارند}، {هیچ‌کس|کسی} {مرا درک نمی‌کند|مرا دوست ندارد}", pattern: 'تفکر سیاه و سفید', severity: 0.95 },
+            { template: "می‌ترسم {رها شوم|تنها بمانم|طرد شوم}، اگر {برود|ترکم کند|مرا ترک کند} {دیوانه می‌شوم|نمی‌توانم زندگی کنم}", pattern: 'ترس از رهاشدگی', severity: 0.98 },
+            { template: "احساس {پوچی|بی‌هویتی|واقعی نبودن} می‌کنم، {نمی‌دانم|مطمئن نیستم} که {کیستم|چه می‌خواهم|کجا می‌روم}", pattern: 'بی‌ثباتی هویت', severity: 0.9 },
+            { template: "{خشمگین شدم|کنترل ندارم|فریاد زدم}، حالا {پشیمانم|شرمنده‌ام|می‌ترسم رهایم کند}", pattern: 'تنظیم هیجانی', severity: 0.85 },
+            { template: "دلم می‌خواهد {درد بکشم|آسیب ببینم|ناپدید شوم} تا {این احساس|این درد|این خالی‌بودن} تمام شود", pattern: 'تکانشگری', severity: 0.95 }
+        ],
+        
+        goodResponseKeywords: [
+            'موقتی', 'امواج', 'مشاهده', 'مکث', 'انتخاب', 'ارزشمند', 'حق', 'احساس',
+            'بیان', 'نیاز', 'حمایت', 'مرز', 'رابطه', 'نوسان', 'طبیعی', 'رشد',
+            'هویت', 'پذیرش', 'مهارت', 'تمرین', 'صبر', 'همدلی', 'اعتبار'
+        ],
+        
+        methods: [
+            {
+                name: 'تحمل پریشانی (DBT-TIP)',
+                difficulty: 'مقدماتی',
+                desc: 'مدیریت لحظات بحران بدون رفتارهای مخرب',
+                exercise: 'تکنیک TIP: دمای صورت با آب سرد، ورزش شدید ۳۰ ثانیه‌ای، تنفس آرام. این‌ها سیستم عصبی را در لحظه بحران تنظیم می‌کنند.'
+            },
+            {
+                name: 'اعتبارسنجی هیجانی',
+                difficulty: 'متوسط',
+                desc: 'پذیرش احساسات شدید بدون قضاوت',
+                exercise: 'به بیمار بگویید: "حق داری این احساس را داشته باشی، این احساس معتبر است". سپس بپرسید: "حالا چه پاسخی انتخاب می‌کنی؟"'
+            },
+            {
+                name: 'ذهن‌آگاهی در روابط',
+                difficulty: 'پیشرفته',
+                desc: 'مشاهده تعاملات بدون واکنش خودکار',
+                exercise: 'قبل از پاسخ در تعارض، ۳ نفس عمیق. بپرسید: "هدف من از این پاسخ چیست؟ آیا این پاسخ به هدفم کمک می‌کند؟"'            }
+        ]
+    },
+    
+    ocd: {
+        name: 'وسواس فکری-عملی',
+        icon: '🔄',
+        color: '#3b82f6',
+        
+        thoughtTemplates: [
+            { template: "باید {چک کنم|مطمئن شوم|تکرار کنم}، {نکند|اگر} {اتفاق بدی|فاجعه‌ای} {بیفتد|رخ دهد}", pattern: 'شک وسواسی', severity: 0.95 },
+            { template: "اگر {اشتباه کنم|فراموش کنم|کافی نباشد}، {مسئولم|تقصیر من است|همه چیز خراب می‌شود}", pattern: 'مسئولیت افراطی', severity: 0.9 },
+            { template: "باید {کامل|بی‌نقص|درست و حسابی} باشد، {نقص|اشتباه|کمی کج} {قابل تحمل نیست|فاجعه است}", pattern: 'کمال‌گرایی', severity: 0.85 },
+            { template: "این فکر {مزاحم|بد|ترسناک} {آمد|برگشت|نمی‌رود}، {نمی‌توانم|شانس ندارم} متوقفش کنم", pattern: 'افکار مزاحم', severity: 0.9 },
+            { template: "تا {مطمئن نشوم|۱۰ بار چک نکنم|کامل حس نکنم} {نمی‌توانم|نمی‌شود} {آرام باشم|ادامه دهم}", pattern: 'اجبار عملی', severity: 0.9 }
+        ],
+        
+        goodResponseKeywords: [
+            'فکر', 'نه دستور', 'عدم قطعیت', 'قابل تحمل', 'مسئول', 'کافی', 'مقاومت',
+            'مسیر عصبی', 'مشاهده', 'بدون واکنش', 'اضطراب', 'کاهش', 'زمان', 'تمرین',
+            'ERP', 'مواجهه', 'پیشگیری', 'پادرش', 'احتمال', 'واقع‌بین', 'شواهد'
+        ],
+        
+        methods: [
+            {
+                name: 'ERP: مواجهه و پیشگیری از پاسخ',
+                difficulty: 'پیشرفته',
+                desc: 'روبرو شدن با ترس بدون انجام رفتار وسواسی',
+                exercise: 'موقعیت اضطراب‌آور کوچک را انتخاب کنید. اضطراب را حس کنید اما رفتار وسواسی را انجام ندهید. زمان بگیرید تا اضطراب طبیعی کاهش یابد.'
+            },
+            {
+                name: 'برچسب‌زنی شناختی',
+                difficulty: 'مقدماتی',
+                desc: 'تشخیص افکار وسواسی به عنوان "فکر OCD"',
+                exercise: 'وقتی فکر مزاحم آمد، بگویید: "این یک فکر وسواس OCD است، نه واقعیت یا دستور". سپس توجه را به فعالیت فعلی برگردانید.'
+            },
+            {
+                name: 'پذیرش عدم قطعیت',
+                difficulty: 'متوسط',
+                desc: 'تمرین زندگی با احتمال کوچک خطر',
+                exercise: 'عمداً یک کار را با ۹۵٪ اطمینان انجام دهید (نه ۱۰۰٪). مشاهده کنید که فاجعه‌ای رخ نمی‌دهد و اضطراب کاهش می‌یابد.'
+            }
+        ]
+    },
+    
+    ptsd: {
+        name: 'استرس پس از سانحه',
+        icon: '💥',
+        color: '#ec4899',
+        thoughtTemplates: [
+            { template: "دوباره {می‌بینم|تجربه می‌کنم|حس می‌کنم} آن {اتفاق|صحنه|لحظه} را، {نمی‌توانم|شانس ندارم} متوقفش کنم", pattern: 'بازتجربه', severity: 0.98 },
+            { template: "از {یادآوری|فکر کردن|صحبت درباره} آن {اجتناب می‌کنم|فرار می‌کنم|می‌ترسم}، {نمیخواهم|نمی‌توانم} روبرو شوم", pattern: 'اجتناب', severity: 0.9 },
+            { template: "همیشه {هوشیارم|مضطربم|آماده‌ام}， {نمی‌توانم|شانس ندارم} {آرام باشم|اعتماد کنم|استراحت کنم}", pattern: 'برانگیختگی', severity: 0.85 },
+            { template: "من {تغییر کردم|دیگر مثل قبل نیستم|شکسته‌ام}، {آن اتفاق|آن تجربه} {مرا خراب کرد|همه چیز را عوض کرد}", pattern: 'تغییرات شناختی', severity: 0.9 },
+            { template: "باید {کاری می‌کردم|جلویش را می‌گرفتم|متفاوت رفتار می‌کردم}، {تقصیر من|مسئولم|شرمنده‌ام}", pattern: 'سرزنش خود', severity: 0.95 }
+        ],
+        
+        goodResponseKeywords: [
+            'تمام شد', 'الان', 'امان', 'طبیعی', 'واکنش', 'رویداد', 'غیرطبیعی',
+            'موقتی', 'امواج', 'ایمنی', 'تدریجی', 'شایسته', 'بهبودی', 'کمک',
+            'فرآیند', 'زمان', 'بیشتر', 'تجربه', 'مراقبت', 'حمایت', 'اعتبار',
+            'زمین‌گیرسازی', 'لحظه حال', 'پردازش', 'ایمن', 'کنترل'
+        ],
+        
+        methods: [
+            {
+                name: 'تثبیت و ایمن‌سازی',
+                difficulty: 'مقدماتی',
+                desc: 'ایجاد احساس امنیت قبل از پردازش خاطرات',
+                exercise: 'مکان امن ذهنی بسازید: جایی که بیمار در آن احساس آرامش می‌کند. هر زمان اضطراب بالا رفت، با ۵ حس به آن مکان برگردد.'
+            },
+            {
+                name: 'تکنیک زمین‌گیرسازی ۵-۴-۳-۲-۱',
+                difficulty: 'متوسط',
+                desc: 'بازگشت به لحظه حال هنگام فلش‌بک',
+                exercise: '۵ چیزی که می‌بینید، ۴ چیزی که لمس می‌کنید، ۳ صدایی که می‌شنوید، ۲ بویی که حس می‌کنید، ۱ طعمی که می‌چشید.'
+            },
+            {
+                name: 'پردازش تدریجی با حمایت',
+                difficulty: 'پیشرفته',
+                desc: 'بررسی خاطرات در محیط امن و با تکنیک‌های تنظیم',
+                exercise: 'با درمانگر آموزش‌دیده، خاطرات را در قطعات کوچک و با تکنیک‌های تنظیم هیجان (مثل تنفس) پردازش کنید.'
+            }
+        ]
+    },
+    
+    adhd: {
+        name: 'نقص توجه-بیش‌فعالی',
+        icon: '⚡',
+        color: '#10b981',
+        
+        thoughtTemplates: [
+            { template: "نمی‌توانم {تمرکز کنم|حواسم را جمع کنم|یک کار را تمام کنم}، {همیشه|همه جا} {حواسم پرت می‌شود|مقطع می‌شوم}", pattern: 'مشکل توجه', severity: 0.85 },
+            { template: "{فراموش کردم|یادم رفت|گم کردم} {دوباره|باز هم}، {مغزم|حافظه‌ام} {خراب است|کار نمی‌کند}", pattern: 'حافظه کاری', severity: 0.8 },
+            { template: "{به تعویق انداختم|شروع نکردم|وقت کم آوردم}， {نمی‌رسیم|سخت است|ناامید شدم}", pattern: 'مدیریت زمان', severity: 0.85 },
+            { template: "بی‌قرارم، نمی‌توانم {بنشینم|آرام باشم|تمرکز کنم}، {انرژی زیاد|فکر زیاد} {دارم|دارد دیوانه‌ام می‌کند}", pattern: 'بیش‌فعالی', severity: 0.75 },
+            { template: "چرا من {مثل بقیه نیستم|نمی‌توانم|همیشه مشکل دارم}، {مغزم|من} {خراب است|نقص دارد}", pattern: 'خودپنداره منفی', severity: 0.9 }
+        ],
+                goodResponseKeywords: [
+            'متفاوت', 'نه بدتر', 'استراتژی', 'مدیریت', 'تقسیم', 'قطعات', 'کوچک',
+            'استراحت', 'کوتاه', 'تمرکز', 'ابزار', 'خارجی', 'یادآور', 'لیست',
+            'نقاط قوت', 'منحصر', 'پیشرفت', 'کوچک', 'کمک', 'هوشمندی', 'ساختار',
+            'بیرونی', 'آزادی', 'درونی', 'پذیرش', 'تفاوت', 'موفق', 'ADHD'
+        ],
+        
+        methods: [
+            {
+                name: 'ساختاردهی محیط کار',
+                difficulty: 'مقدماتی',
+                desc: 'کاهش حواس‌پرتی و افزایش تمرکز',
+                exercise: 'مکان کار را ساده کنید: فقط وسایل ضروری. از تایمر پومودورو (۲۵ دقیقه کار، ۵ دقیقه استراحت) استفاده کنید.'
+            },
+            {
+                name: 'قانون ۲ دقیقه برای شروع',
+                difficulty: 'متوسط',
+                desc: 'غلبه بر فلج شروع کار',
+                exercise: 'اگر کاری کمتر از ۲ دقیقه طول می‌کشد، همین الان انجام دهید. برای کارهای بزرگ، فقط قول ۲ دقیقه شروع بدهید.'
+            },
+            {
+                name: 'سیستم‌های خارجی برای حافظه',
+                difficulty: 'پیشرفته',
+                desc: 'جبران حافظه کاری با ابزار',
+                exercise: 'همه چیز را بنویسید: از اپلیکیشن یادآور، لیست کارها، و تقویم استفاده کنید. مغز برای ایده‌پردازی است، نه ذخیره جزئیات.'
+            }
+        ]
+    }
+};
+
+// ============================================
+// TherapyTrainer Engine
+// ============================================
+class TherapyTrainer {
+    constructor(disorderKey) {
+        this.disorderKey = disorderKey;
+        this.data = DISORDER_DATA[disorderKey];
+        
+        // Training data for evaluation
+        this.goodPatterns = {};
+        this.unhealthyPatterns = {};
+        
+        // Session tracking
+        this.sessions = [];
+        this.skillHistory = [];
+        this.scenarioCount = 0;
+        
+        // Initialize models
+        this.initialize();
+    }    
+    // Tokenize Persian text
+    tokenize(text) {
+        if (!text || typeof text !== 'string') return [];
+        return text
+            .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()""''؟!]/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .toLowerCase()
+            .split(' ')
+            .filter(w => w && w.length > 1);
+    }
+    
+    // Initialize with training data
+    initialize() {
+        // Build pattern models from good response keywords
+        this.data.goodResponseKeywords.forEach(keyword => {
+            this.goodPatterns[keyword] = (this.goodPatterns[keyword] || 0) + 2;
+        });
+        
+        // Build unhealthy pattern models
+        this.data.thoughtTemplates.forEach(t => {
+            const words = this.tokenize(t.template);
+            words.forEach(w => {
+                this.unhealthyPatterns[w] = (this.unhealthyPatterns[w] || 0) + 1;
+            });
+        });
+    }
+    
+    // Generate unhealthy thought scenario
+    generateScenario(difficulty = 2) {
+        const templates = this.data.thoughtTemplates;
+        
+        // Select template based on difficulty
+        let availableTemplates = templates;
+        if (difficulty === 1) {
+            // Easy: lower severity patterns
+            availableTemplates = templates.filter(t => t.severity < 0.9);
+        } else if (difficulty === 3) {
+            // Hard: higher severity patterns
+            availableTemplates = templates.filter(t => t.severity >= 0.9);
+        }
+        
+        const template = availableTemplates[Math.floor(Math.random() * availableTemplates.length)];
+        
+        // Fill template placeholders
+        let thought = template.template;
+        const options = thought.match(/\{([^}]+)\}/g);
+        if (options) {
+            options.forEach(opt => {                const choices = opt.replace(/[{}]/g, '').split('|');
+                const replacement = choices[Math.floor(Math.random() * choices.length)];
+                thought = thought.replace(opt, replacement);
+            });
+        }
+        
+        this.scenarioCount++;
+        
+        return {
+            thought: thought,
+            pattern: template.pattern,
+            severity: template.severity,
+            scenarioNum: this.scenarioCount,
+            difficulty: difficulty
+        };
+    }
+    
+    // Evaluate therapist response
+    evaluateResponse(response, scenario) {
+        const tokens = this.tokenize(response);
+        const scores = {
+            pattern: 0,
+            empathy: 0,
+            realistic: 0,
+            actionable: 0
+        };
+        
+        // 1. Pattern Recognition Score (0-100)
+        const patternKeywords = {
+            'تفکر همه یا هیچ': ['همه', 'هیچ', 'همیشه', 'هرگز', 'کامل', 'صفر', 'صد'],
+            'سرزنش خود': ['تقصیر', 'مقصر', 'مسئول', 'اشتباه', 'من'],
+            'درماندگی آموخته‌شده': ['نمی‌توانم', 'نمی‌شود', 'غیرممکن', 'شانس', 'امید'],
+            'احساس بی‌ارزشی': ['بی‌ارزش', 'ناخواسته', 'سربار', 'دوست', 'درک'],
+            'پیش‌بینی فاجعه': ['فاجعه', 'بد', 'خراب', 'تمام', 'حتماً', 'قطعاً'],
+            'فکر چه‌می‌شود': ['اگر', 'نکند', 'شاید', 'چه', 'شود'],
+            'تفکر سیاه و سفید': ['همه', 'هیچ', 'همیشه', 'هرگز', 'سیاه', 'سفید'],
+            'ترس از رهاشدگی': ['رها', 'تنها', 'طرد', 'برود', 'ترک'],
+            'شک وسواسی': ['چک', 'مطمئن', 'نکند', 'اگر', 'تکرار'],
+            'بازتجربه': ['دوباره', 'می‌بینم', 'تجربه', 'خاطره', 'فلش'],
+            'مشکل توجه': ['تمرکز', 'حواس', 'پرت', 'مقطع', 'تمام']
+        };
+        
+        const patternWords = patternKeywords[scenario.pattern] || [];
+        const responseHasPatternWords = tokens.some(t => patternWords.some(pw => t.includes(pw)));
+        const responseHasReframeWords = tokens.some(t => this.data.goodResponseKeywords.some(gk => t.includes(gk)));
+        
+        if (responseHasPatternWords && responseHasReframeWords) {
+            scores.pattern = 90 + Math.random() * 10;
+        } else if (responseHasReframeWords) {            scores.pattern = 60 + Math.random() * 20;
+        } else if (responseHasPatternWords) {
+            scores.pattern = 40 + Math.random() * 20;
+        } else {
+            scores.pattern = Math.random() * 40;
+        }
+        
+        // 2. Empathy Score (0-100)
+        const empathyWords = ['درک', 'همدلی', 'حق', 'طبیعی', 'احساس', 'می‌فهمم', 'سخت', 'درد', 'رنج'];
+        const empathyCount = tokens.filter(t => empathyWords.some(ew => t.includes(ew))).length;
+        scores.empathy = Math.min(100, empathyCount * 15 + 30 + Math.random() * 20);
+        
+        // 3. Realistic/Balanced Score (0-100)
+        const realisticWords = ['واقع‌بین', 'متعادل', 'احتمال', 'شواهد', 'موقتی', 'تدریجی', 'قدم', 'کوچک'];
+        const realisticCount = tokens.filter(t => realisticWords.some(rw => t.includes(rw))).length;
+        scores.realistic = Math.min(100, realisticCount * 15 + 40 + Math.random() * 20);
+        
+        // 4. Actionable/Practical Score (0-100)
+        const actionableWords = ['انجام', 'تمرین', 'قدم', 'شروع', 'امروز', 'الان', 'لیست', 'یادآور', 'برنامه'];
+        const actionableCount = tokens.filter(t => actionableWords.some(aw => t.includes(aw))).length;
+        scores.actionable = Math.min(100, actionableCount * 15 + 35 + Math.random() * 25);
+        
+        // Calculate overall score
+        const overall = (
+            scores.pattern * 0.35 +
+            scores.empathy * 0.25 +
+            scores.realistic * 0.25 +
+            scores.actionable * 0.15
+        );
+        
+        // Generate feedback
+        const feedback = this.generateFeedback(scores, response, scenario);
+        
+        return {
+            scores: {
+                pattern: Math.round(scores.pattern),
+                empathy: Math.round(scores.empathy),
+                realistic: Math.round(scores.realistic),
+                actionable: Math.round(scores.actionable)
+            },
+            overall: Math.round(overall),
+            grade: this.getGrade(overall),
+            feedback: feedback
+        };
+    }
+    
+    // Generate personalized feedback
+    generateFeedback(scores, response, scenario) {
+        const feedbacks = [];
+        if (scores.pattern < 60) {
+            feedbacks.push(`🎯 سعی کنید الگوی "${scenario.pattern}" را مستقیماً در پاسخ خود شناسایی و نام ببرید.`);
+        }
+        if (scores.empathy < 60) {
+            feedbacks.push('💙 پاسخ شما می‌تواند همدلانه‌تر باشد. از کلماتی مانند "درک می‌کنم"، "حق داری"، "طبیعی است" استفاده کنید.');
+        }
+        if (scores.realistic < 60) {
+            feedbacks.push('🧭 پاسخ واقع‌بینانه‌تر: به جای وعده‌های بزرگ، روی قدم‌های کوچک و قابل دسترس تمرکز کنید.');
+        }
+        if (scores.actionable < 60) {
+            feedbacks.push('🛠️ پاسخ کاربردی‌تر: یک تمرین یا اقدام مشخص و کوچک برای امروز پیشنهاد دهید.');
+        }
+        
+        if (feedbacks.length === 0) {
+            feedbacks.push('✅ پاسخ عالی بود! همه معیارهای یک بازسازی شناختی مؤثر را داشت.');
+        }
+        
+        return feedbacks.join('<br><br>');
+    }
+    
+    // Get grade label
+    getGrade(score) {
+        if (score >= 85) return { label: 'عالی 🌟', class: 'grade-excellent' };
+        if (score >= 70) return { label: 'خوب 👍', class: 'grade-good' };
+        if (score >= 50) return { label: 'قابل قبول 👌', class: 'grade-good' };
+        return { label: 'نیاز به تمرین 💪', class: 'grade-needs-work' };
+    }
+    
+    // Get suggested method based on scenario
+    getSuggestedMethod(scenario) {
+        const pattern = scenario.pattern;
+        
+        if (pattern.includes('فاجعه') || pattern.includes('اضطراب')) {
+            return this.data.methods.find(m => m.name.includes('تنفس')) || this.data.methods[0];
+        }
+        if (pattern.includes('وسواس') || pattern.includes('اجبار')) {
+            return this.data.methods.find(m => m.name.includes('ERP')) || this.data.methods[0];
+        }
+        if (pattern.includes('هیجانی') || pattern.includes('خشم') || pattern.includes('رها')) {
+            return this.data.methods.find(m => m.name.includes('DBT')) || this.data.methods[0];
+        }
+        if (pattern.includes('توجه') || pattern.includes('حواس')) {
+            return this.data.methods.find(m => m.name.includes('ساختار')) || this.data.methods[0];
+        }
+        
+        return this.data.methods[0];
+    }
+    
+    // Save training session    
+    saveSession(scenario, response, evaluation) {
+        const session = {
+            timestamp: new Date().toISOString(),
+            disorder: this.disorderKey,
+            scenario: scenario,
+            response: response,
+            evaluation: evaluation,
+            difficulty: scenario.difficulty
+        };
+        
+        this.sessions.push(session);
+        this.skillHistory.push({
+            date: new Date().toLocaleDateString('fa-IR'),
+            score: evaluation.overall
+        });
+        
+        // Learn from good responses
+        if (evaluation.overall >= 70) {
+            const tokens = this.tokenize(response);
+            tokens.forEach(t => {
+                if (this.data.goodResponseKeywords.some(k => t.includes(k))) {
+                    this.goodPatterns[t] = (this.goodPatterns[t] || 0) + 0.5;
+                }
+            });
+        }
+        
+        return session;
+    }
+    
+    // Get skill progress
+    getSkillProgress() {
+        if (this.skillHistory.length === 0) return { current: 0, trend: 'learning', avg: 0 };
+        
+        const recent = this.skillHistory.slice(-5);
+        const avg = recent.reduce((s, x) => s + x.score, 0) / recent.length;
+        const current = this.skillHistory[this.skillHistory.length - 1].score;
+        
+        // Determine trend
+        let trend = 'learning';
+        if (recent.length >= 3) {
+            const first = recent.slice(0, 2).reduce((s, x) => s + x.score, 0) / 2;
+            const last = recent.slice(-2).reduce((s, x) => s + x.score, 0) / 2;
+            if (last >= 80) trend = 'excellent';
+            else if (last >= first + 10) trend = 'good';
+            else if (last < first - 10) trend = 'learning';
+        }
+        
+        return { current, trend, avg: Math.round(avg) };
+    }
+    
+    // Export progress data
+    exportData() {
+        return {
+            disorder: this.disorderKey,
+            sessions: this.sessions.length,
+            skill: this.getSkillProgress(),
+            history: this.skillHistory,
+            exportDate: new Date().toISOString()
+        };
+    }
+    
+    // Reset progress
+    reset() {
+        this.goodPatterns = {};
+        this.unhealthyPatterns = {};
+        this.sessions = [];
+        this.skillHistory = [];
+        this.scenarioCount = 0;
+        this.initialize();
+    }
+}
+
+// ============================================
+// UI Controller
+// ============================================
+let trainer = null;
+let currentScenario = null;
+
+const $ = id => document.getElementById(id);
+const notify = (msg, type = 'info') => {
+    const n = $('notification');
+    n.textContent = msg;
+    n.className = `notification ${type} show`;
+    setTimeout(() => n.className = 'notification', 2500);
+};
+
+// Initialize
+function init() {
+    try {
+        trainer = new TherapyTrainer('depression');
+        updateStatus('ready', '✅ آماده تمرین درمانگری');
+        generateNewScenario();
+        updateUI();
+        drawChart();
+        notify('🎯 مدل افسردگی بارگذاری شد. شروع به تمرین کنید!', 'success');
+    } catch (e) {
+        updateStatus('error', `❌ خطا: ${e.message}`);
+        notify('خطا در بارگذاری', 'error');
+    }
+}
+function updateStatus(state, message) {
+    const status = $('status');
+    status.className = `status ${state}`;
+    status.innerHTML = `<span>${state === 'ready' ? '✅' : state === 'loading' ? '⏳' : '❌'}</span> ${message}`;
+}
+
+// Select disorder
+function selectDisorder(key, btnElement) {
+    document.querySelectorAll('.disorder-btn').forEach(btn => btn.classList.remove('active'));
+    if (btnElement) {
+        btnElement.classList.add('active');
+    } else {
+        const backupBtn = document.querySelector(`.disorder-btn.${key}`);
+        if (backupBtn) backupBtn.classList.add('active');
+    }
+    
+    updateStatus('loading', `🔄 در حال بارگذاری مدل ${DISORDER_DATA[key].name}...`);
+    
+    setTimeout(() => {
+        trainer = new TherapyTrainer(key);
+        updateStatus('ready', `✅ مدل ${DISORDER_DATA[key].name} آماده تمرین است`);
+        generateNewScenario();
+        updateUI();
+        drawChart();
+        notify(`🎯 مدل ${DISORDER_DATA[key].name} فعال شد. شروع به تمرین کنید!`, 'info');
+    }, 300);
+}
+
+// Generate new scenario
+function generateNewScenario() {
+    if (!trainer) return;
+    
+    const difficulty = parseInt($('difficulty').value);
+    currentScenario = trainer.generateScenario(difficulty);
+    
+    // Display scenario
+    $('unhealthyThought').textContent = currentScenario.thought;
+    $('patternTag').textContent = `الگو: ${currentScenario.pattern}`;
+    $('severityValue').textContent = `${Math.round(currentScenario.severity * 100)}٪`;
+    $('patternType').textContent = currentScenario.pattern;
+    $('scenarioNum').textContent = currentScenario.scenarioNum.toLocaleString('fa-IR');
+    
+    // Reset evaluation section
+    $('evaluationSection').classList.remove('show');
+    $('therapistResponse').value = '';
+    
+    // Update method suggestions
+    updateMethodSuggestions();
+    
+    notify('🧠 سناریوی جدید تولید شد', 'info');
+}
+
+// Update method suggestions
+function updateMethodSuggestions() {    if (!trainer || !currentScenario) return;
+    
+    const method = trainer.getSuggestedMethod(currentScenario);
+    const container = $('methodSuggestions');
+    
+    container.innerHTML = `
+        <div class="method-card">
+            <div class="method-name">
+                ${method.name}
+                <span class="method-difficulty">${method.difficulty}</span>
+            </div>
+            <div class="method-desc">${method.desc}</div>
+            <div class="method-exercise">🎯 تمرین عملی: ${method.exercise}</div>
+        </div>
+    `;
+}
+
+// Evaluate therapist response
+function evaluateResponse() {
+    if (!trainer || !currentScenario) {
+        notify('⚠️ ابتدا سناریو تولید کنید', 'warning');
+        return;
+    }
+    
+    const response = $('therapistResponse').value.trim();
+    if (response.length < 10) {
+        notify('⚠️ پاسخ کامل‌تری وارد کنید', 'warning');
+        return;
+    }
+    
+    // Evaluate
+    const evaluation = trainer.evaluateResponse(response, currentScenario);
+    
+    // Display evaluation
+    $('evalScore').textContent = `${evaluation.overall.toLocaleString('fa-IR')}٪`;
+    $('evalGrade').textContent = evaluation.grade.label;
+    $('evalGrade').className = `eval-grade ${evaluation.grade.class}`;
+    
+    // Update criteria scores
+    const criteria = [
+        { id: 'pattern', score: evaluation.scores.pattern },
+        { id: 'empathy', score: evaluation.scores.empathy },
+        { id: 'realistic', score: evaluation.scores.realistic },
+        { id: 'actionable', score: evaluation.scores.actionable }
+    ];
+    
+    criteria.forEach(c => {
+        $(`score${c.id.charAt(0).toUpperCase() + c.id.slice(1)}`).textContent = `${c.score.toLocaleString('fa-IR')}٪`;
+        const fill = $(`fill${c.id.charAt(0).toUpperCase() + c.id.slice(1)}`);
+        fill.style.width = `${c.score}%`;        fill.className = `score-fill ${c.score >= 70 ? 'high' : c.score >= 50 ? 'medium' : 'low'}`;
+    });
+    
+    $('feedbackText').innerHTML = evaluation.feedback;
+    $('evaluationSection').classList.add('show');
+    
+    // Save session
+    trainer.saveSession(currentScenario, response, evaluation);
+    
+    updateUI();
+    drawChart();
+    
+    notify(`✅ ارزیابی کامل شد | امتیاز: ${evaluation.overall}٪`, evaluation.overall >= 70 ? 'success' : 'warning');
+}
+
+// Save session manually
+function saveSession() {
+    if (!trainer) return;
+    notify('✅ تمرین به صورت خودکار ذخیره می‌شود', 'info');
+}
+
+// Export progress
+function exportProgress() {
+    if (!trainer) return;
+    const data = trainer.exportData();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `therapist-training-${trainer.disorderKey}-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    notify('📊 گزارش تمرین دانلود شد', 'success');
+}
+
+// Reset progress
+function resetProgress() {
+    if (!trainer) return;
+    if (confirm('آیا مطمئنید؟ تمام پیشرفت این اختلال پاک می‌شود.')) {
+        trainer.reset();
+        updateUI();
+        drawChart();
+        generateNewScenario();
+        notify('🔄 پیشرفت بازنشانی شد', 'info');
+    }
+}
+
+// Update UI components
+function updateUI() {
+    if (!trainer) return;    
+    // Stats
+    $('statSessions').textContent = trainer.sessions.length.toLocaleString('fa-IR');
+    
+    const progress = trainer.getSkillProgress();
+    $('statAvgScore').textContent = `${progress.avg.toLocaleString('fa-IR')}٪`;
+    
+    // Skill progress
+    $('skillPercent').textContent = `${progress.current.toLocaleString('fa-IR')}٪`;
+    $('skillBar').style.width = `${progress.current}%`;
+    
+    // Streak calculation
+    const streak = calculateStreak(trainer.skillHistory);
+    $('statStreak').textContent = streak.toLocaleString('fa-IR');
+    
+    // History
+    updateHistory();
+}
+
+// Calculate improvement streak
+function calculateStreak(history) {
+    if (history.length < 2) return 0;
+    let streak = 0;
+    for (let i = history.length - 1; i > 0; i--) {
+        if (history[i].score >= history[i-1].score) {
+            streak++;
+        } else {
+            break;
+        }
+    }
+    return streak;
+}
+
+// Update session history display
+function updateHistory() {
+    const container = $('sessionHistory');
+    if (trainer.sessions.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:10px">هنوز تمرینی ثبت نشده</div>';
+        return;
+    }
+    
+    container.innerHTML = trainer.sessions.slice(-5).reverse().map(s => `
+        <div class="history-item">
+            <div class="history-date">${new Date(s.timestamp).toLocaleString('fa-IR')}</div>
+            <div style="margin:4px 0"><strong>الگو:</strong> ${s.scenario.pattern}</div>
+            <div class="history-score" style="background:${s.evaluation.overall>=70?'rgba(34,197,94,0.2)':'rgba(245,158,11,0.2)'};color:${s.evaluation.overall>=70?'var(--success)':'var(--warning)'}">
+                امتیاز: ${s.evaluation.overall}٪
+            </div>
+        </div>
+    `).join('');
+}
+
+// Draw skill chart
+function drawChart() {
+    const canvas = $('skillChart');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width = canvas.offsetWidth * 2;
+    const height = canvas.height = canvas.offsetHeight * 2;
+    
+    ctx.clearRect(0, 0, width, height);
+    
+    const history = trainer.skillHistory;
+    if (history.length < 2) {
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '14px Tahoma';
+        ctx.textAlign = 'center';
+        ctx.fillText('برای نمودار حداقل ۲ تمرین لازم است', width/2, height/2);
+        return;
+    }
+    
+    const padding = 30;
+    const chartWidth = width - padding * 2;
+    const chartHeight = height - padding * 2;
+    const pointSpacing = chartWidth / Math.max(1, history.length - 1);
+    
+    // Draw axes
+    ctx.strokeStyle = '#444';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(padding, padding);
+    ctx.lineTo(padding, height - padding);
+    ctx.lineTo(width - padding, height - padding);
+    ctx.stroke();
+    
+    // Draw threshold lines
+    ctx.setLineDash([5, 5]);
+    ctx.strokeStyle = 'rgba(34, 197, 94, 0.3)';
+    ctx.beginPath();
+    const excellentY = height - padding - 0.85 * chartHeight;
+    ctx.moveTo(padding, excellentY);
+    ctx.lineTo(width - padding, excellentY);
+    ctx.stroke();
+    
+    ctx.strokeStyle = 'rgba(245, 158, 11, 0.3)';
+    ctx.beginPath();
+    const goodY = height - padding - 0.70 * chartHeight;
+    ctx.moveTo(padding, goodY);
+    ctx.lineTo(width - padding, goodY);    ctx.stroke();
+    ctx.setLineDash([]);
+    
+    // Draw data points
+    history.forEach((point, i) => {
+        const x = padding + i * pointSpacing;
+        const y = height - padding - (point.score / 100) * chartHeight;
+        
+        // Line
+        ctx.strokeStyle = point.score >= 80 ? '#22c55e' : point.score >= 60 ? '#f59e0b' : '#3b82f6';
+        ctx.lineWidth = 2;
+        if (i > 0) {
+            const prevX = padding + (i-1) * pointSpacing;
+            const prevY = height - padding - (history[i-1].score / 100) * chartHeight;
+            ctx.beginPath();
+            ctx.moveTo(prevX, prevY);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+        }
+        
+        // Point
+        ctx.fillStyle = point.score >= 80 ? '#22c55e' : point.score >= 60 ? '#f59e0b' : '#3b82f6';
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, Math.PI * 2);
+        ctx.fill();
+    });
+}
+
+// Touch support
+document.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('touchstart', function() { this.style.transform = 'scale(0.98)'; });
+    btn.addEventListener('touchend', function() { this.style.transform = ''; });
+});
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', () => setTimeout(init, 200));
+if (!document.addEventListener) window.onload = init;
+</script>
+
+</body>
+</html>
